@@ -4,8 +4,9 @@ app.use(express.json());
 var user = require('./routes/users');
 
 //認証無しAPI
-app.get('/', function (req, res) {
-    res.json({ status: "OK" });
+app.post('/', function (req, res) {
+    console.log(req.body)
+   return  res.json({ status: "OK" });
 })
 //userに来たものは、すべてroutesのusersへ。。。
 app.use("/user", user)
