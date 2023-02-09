@@ -53,7 +53,7 @@ router.post('/login', async (req, res, next) => {
   try {
     //DBからユーザーを取得する
     const user = await db.User.findOne({ where: { username: reqUserName } });
-    if (user.username === reqUserName && hashed(user.password) === hashed(reqPass)) {
+    if (user.username === reqUserName && user.password === hashed(reqPass)) {
       req.session.username = { name: req.body.username };
       res.send(200)
     }
@@ -77,7 +77,7 @@ router.post('/register', async (req, res, next) => {
     //DBからユーザーを取得する
     const addData = await db.User.create({
       username: reqUserName,
-      password: reqPass,
+      password: hashed(reqPass),
       firstName: reqFirstName,
       lastName: reqLastName,
       email: reqEmail
