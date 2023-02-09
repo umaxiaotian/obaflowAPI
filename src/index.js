@@ -2,6 +2,14 @@ var express = require('express');
 const app = express();
 app.use(express.json());
 var user = require('./routes/users');
+const session = require('express-session')
+
+// セッションの生存時間（分で指定）
+const maxage = 10;
+//アクセスされる度にセッション時間を延長する
+app.use(session({
+    secret: 'keyboard cat', cookie: { maxAge: maxage * 60000 }
+}));
 
 //認証無しAPI
 app.post('/', function (req, res) {

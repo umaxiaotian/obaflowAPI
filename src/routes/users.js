@@ -88,6 +88,15 @@ router.post('/register', async (req, res, next) => {
   }
 })
 
+router.delete('/logout', (req, res) => {
+  // セッションを破棄
+  req.session.destroy((err) => {
+      res.status(401).send('logout');
+  });
+});
+
+
+
 router.get('/', (req, res, next) => {
   sessionCheck(req, res, next)
   res.sendStatus(200)
