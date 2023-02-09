@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "migrate": "npx sequelize-cli db:migrate --env development",
-    "seed":"npx sequelize-cli db:seed:all"
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "dependencies": {
     "@prisma/client": "4.9.0",

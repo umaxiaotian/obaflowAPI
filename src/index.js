@@ -11,16 +11,24 @@ app.post('/', function (req, res) {
 
 
 //DocekrTestEndPoint
-app.post('/docker', function (req, res) {
-    var Docker = require('dockerode');
-    var docker = new Docker({
-        host: '127.0.0.1',
-        port: process.env.DOCKER_PORT || 2375,
-      });
-    var container = docker.getContainer('b221936da111');
-    container.inspect(function (err, data) {
-        console.log(data);
-      });
+app.post('/docker', async function (req, res) {
+    // var Docker = require('dockerode');
+    // var docker = new Docker({
+    //     host: '127.0.0.1',
+    //     port: process.env.DOCKER_PORT || 2375,
+    //   });
+    // var container = docker.getContainer('b221936da111');
+    // container.inspect(function (err, data) {
+    //     console.log(data);
+    //   });
+    const db = require('../models/index');
+   const category = await db.User.findAll();
+   console.log(category)
+
+ 
+
+
+
 })
 
 
