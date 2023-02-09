@@ -7,6 +7,7 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const session = require('express-session')
 var crypto = require("crypto");
+const db = require('../../models/index');
 
 // Cross Originを有効化
 router.use((req, res, next) => {
@@ -29,16 +30,12 @@ router.use(session({ secret: 'keyboard cat', cookie: { maxAge: maxage * 60000 } 
 
 // セッション管理関数
 const sessionCheck = (req, res, next) => {
-  if (req.session.email) {
+  if (req.session.username) {
     next();
   } else {
     res.status(440).json({ message: 'セッション切れです' })
   }
 }
-
-
-const email = 'email@email.com'
-const password = 'hogehoge'
 
 // sha-512で暗号化
 const hashed = password => {
@@ -49,22 +46,47 @@ const hashed = password => {
 }
 
 // ログイン処理
-router.post('/login', (req, res, next) => {
-  const reqEmail = req.body.email
+router.post('/login', async (req, res, next) => {
+  const reqUserName = req.body.username
   const reqPass = req.body.password
+
   try {
-    if (email === reqEmail && hashed(password) === hashed(reqPass)) {
-      req.session.email = { name: req.body.email };
+    //DBからユーザーを取得する
+    const user = await db.User.findOne({ where: { username: reqUserName } });
+    if (user.username === reqUserName && hashed(user.password) === hashed(reqPass)) {
+      req.session.username = { name: req.body.username };
       res.send(200)
     }
     else {
-      res.status(401).json({ message: 'メールアドレス/パスワードが一致しません' })
+      res.status(401).json({ message: 'ユーザー名/パスワードが一致しません' })
     }
   }
   catch (error) {
     res.status(500).json({ message: 'error' })
   }
 });
+
+// ユーザー登録処理
+router.post('/register', async (req, res, next) => {
+  const reqUserName = req.body.username
+  const reqPass = req.body.password
+  const reqFirstName = req.body.firstName
+  const reqLastName = req.body.lastName
+  const reqEmail = req.body.email
+  try {
+    //DBからユーザーを取得する
+    const addData = await db.User.create({
+      username: reqUserName,
+      password: reqPass,
+      firstName: reqFirstName,
+      lastName: reqLastName,
+      email: reqEmail
+    })
+    res.send(200)
+  } catch (error) {
+    res.status(500).json({ message: 'error' })
+  }
+})
 
 router.get('/', (req, res, next) => {
   sessionCheck(req, res, next)
