@@ -1,4 +1,4 @@
 node_modules/
 dist/
 *.env*
-db-dev.sqlite3
+./db-dev.sqlite3
